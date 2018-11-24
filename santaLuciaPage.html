@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+    <link rel="stylesheet" type="text/css" href="peopleCard.css">
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.3/Chart.bundle.js"></script>
+
+    <script src="https://www.gstatic.com/firebasejs/5.5.2/firebase.js"></script>
+
+    <title>Tweetxcoco</title>
+  </head>
+  <body>
+    <h1 class="display-3 text-info text-center">Tweetxcoco</h1>
+    <hr />
+    <nav class="nav justify-content-center">
+      <h4><a class="nav-link" href="/Bases/">General</a></h4>
+      <h4><a class="nav-link" href="/Bases/texcocoPage.html">NAIM</a></h4>
+      <h4><a class="nav-link disabled">Santa Lucía</a></h4>
+      <h4><a class="nav-link" href="/Bases/botsPage.html">Bots</a></h4>
+      <h4><a class="nav-link" href="/Bases/sentimentPage.html">Sentimiento</a></h4>
+    </nav>
+    <hr />
+    <h1 class="text-center"><u>Estadística:</u></h1>
+    <br/>
+    <br/>
+    <div id="data"> 
+    </div>
+    <br>
+    <br>
+    <hr />
+    <h1 class="text-center"><u>Top 3:</u></h1>
+    <section id="team" class="pb-5">
+    <div class="container">
+        <div id="cards" class="row">
+        </div>
+    </div>
+</section>
+</div>
+
+    <!-- Optional JavaScript -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script>
+
+    function addCard(name, realName, image, tweet, desc){
+      var row = document.getElementById('cards');
+      row.innerHTML += '<div class="col-xs-12 col-sm-6 col-md-4"><div class="image-flip" ontouchstart="this.classList.toggle("hover");"><div class="mainflip"><div class="frontside"><div class="card"><div class="card-body text-center"><p><img class=" img-fluid" src="'+ image +'" alt="card image"></p><h4 class="card-title">'+ realName +'</h4><p class="card-text">'+ desc +'</p><a href="#" class="btn btn-primary btn-sm"><i class="fa fa-plus"></i></a></div></div></div><div class="backside"><div class="card"><div class="card-body text-center mt-4"><h4 class="card-title">@'+ name +'</h4><p class="card-text">'+ tweet +'</p></div></div></div></div></div></div>'
+    }
+
+    function setData(tweets, total){
+      var percentage = Math.round((tweets/total)*100);
+      var div = document.getElementById("data");
+      div.innerHTML += '<h2 class="d-inline p-3 mb-2 bg-info text-white text-center" style="position:relative; left: 550px">'+ tweets +' tweets de '+ total +'</h2>';
+      div.innerHTML += '<h2 class="d-inline p-3 mb-2 bg-info text-white text-center" style="position:relative; left: 560px">Porcentaje: '+ percentage +'%</h2>';
+    }
+
+      var config = {
+          apiKey: "AIzaSyDoA4NvBBH4EC1rwmEfUUYu9yEx6DgdDoE",
+          authDomain: "twitterdb-a95d1.firebaseapp.com",
+          databaseURL: "https://twitterdb-a95d1.firebaseio.com",
+          projectId: "<PROJECT_ID>",
+          storageBucket: "twitterdb-a95d1.appspot.com",
+          messagingSenderId: "642611362895",
+      };
+
+      firebase.initializeApp(config);
+      var database = firebase.database();
+
+      var santaLucia = database.ref('santaLuciaUsers').orderByChild('followers').limitToLast(3);
+      santaLucia.once("value").then(function(snapshot){
+        snapshot.forEach(function(santaLuciaSnapshot){
+          addCard(santaLuciaSnapshot.val().name, santaLuciaSnapshot.val().realName, santaLuciaSnapshot.val().image, santaLuciaSnapshot.val().tweet, santaLuciaSnapshot.val().description);
+        })
+      });
+
+      var data = database.ref('totals');
+      data.once("value").then(function(snapshot){
+        setData(snapshot.val().totalSantaLucia, snapshot.val().totalFiltered);
+      });
+
+</script>
+  </body>
+</html>

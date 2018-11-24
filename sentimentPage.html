@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+    <link rel="stylesheet" type="text/css" href="peopleCard.css">
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.3/Chart.bundle.js"></script>
+
+    <script src="https://www.gstatic.com/firebasejs/5.5.2/firebase.js"></script>
+
+    <title>Tweetxcoco</title>
+  </head>
+  <body>
+    <h1 class="display-3 text-info text-center">Tweetxcoco</h1>
+    <hr />
+    <nav class="nav justify-content-center">
+      <h4><a class="nav-link" href="/Bases/">General</a></h4>
+      <h4><a class="nav-link" href="/Bases/texcocoPage.html">NAIM</a></h4>
+      <h4><a class="nav-link" href="/Bases/santaLuciaPage.html">Santa Lucía</a></h4>
+      <h4><a class="nav-link" href="/Bases/botsPage.html">Bots</a></h4>
+      <h4><a class="nav-link disabled">Sentimiento</a></h4>
+    </nav>
+    <hr />
+    <h1 class="text-center"><u>General:</u></h1>
+    <br/>
+    <div id="generalData"> 
+    </div>
+    <br>
+    <br>
+    <br>
+    <div class="container" style="position: relative; left:25px">
+      <div class="row">
+        <br/>
+        <br/>
+        <div class="col" id="naimCard">
+          <h2 style="position: relative; left:115px"><u>NAIM:</u></h2>
+        </div>
+        <div class="col" id="santaLuciaCard" style="position:relative; left: 180px">
+          <h2 style="position: relative; left:70px"><u>Santa Lucía:</u></h2>
+        </div>
+      </div>
+    </div>
+    <br>
+    <br>
+    <br>
+    <hr />
+</div>
+
+    <script>
+
+    function setGeneralData(score){
+      var div = document.getElementById("generalData");
+      div.innerHTML += '<h2 class="d-inline p-3 mb-2 bg-danger text-white text-center" style="position:relative; left: 670px">Sentimiento: malo</h2><br><br><br>';
+      div.innerHTML += '<h2 class="d-inline p-3 mb-2 bg-danger text-white text-center" style="position:relative; left: 695px">(Puntaje: '+ score +')</h2>';
+    }
+
+    function setNaimData(score){
+      var div = document.getElementById("naimCard");
+      div.innerHTML += '<h2 class="d-inline p-3 mb-2 bg-danger text-white text-center" style="position:relative; top:40px">Sentimiento: malo</h2><br><br><br>';
+      div.innerHTML += '<h2 class="d-inline p-3 mb-2 bg-danger text-white text-center" style="position:relative; left:30px; top:40px">(Puntaje: '+ score +')</h2>';
+    }
+
+    function setSantaLuciaData(score){
+      var div = document.getElementById("santaLuciaCard");
+      div.innerHTML += '<h2 class="d-inline p-3 mb-2 bg-success text-white text-center" style="position:relative; top:40px">Sentimiento: bueno</h2><br><br><br>';
+      div.innerHTML += '<h2 class="d-inline p-3 mb-2 bg-success text-white text-center" style="position:relative; left:45px; top:40px">(Puntaje: '+ score +')</h2>';
+    }
+
+      var config = {
+          apiKey: "AIzaSyDoA4NvBBH4EC1rwmEfUUYu9yEx6DgdDoE",
+          authDomain: "twitterdb-a95d1.firebaseapp.com",
+          databaseURL: "https://twitterdb-a95d1.firebaseio.com",
+          projectId: "<PROJECT_ID>",
+          storageBucket: "twitterdb-a95d1.appspot.com",
+          messagingSenderId: "642611362895",
+      };
+
+      firebase.initializeApp(config);
+      var database = firebase.database();
+
+      var data = database.ref('sentimentScores');
+      data.once("value").then(function(snapshot){
+        setGeneralData(snapshot.val().general);
+        setNaimData(snapshot.val().texcoco);
+        setSantaLuciaData(snapshot.val().santaLucia);
+      });
+
+</script>
+  </body>
+</html>
